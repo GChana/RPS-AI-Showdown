@@ -18,6 +18,7 @@ function App() {
 
   const [userChoice, setUserChoice] = useState("");
   const [machineChoice, setMachineChoice] = useState("");
+  const [result, setResult] = useState("");
 
   const [emoji, setEmoji] = useState(null);
   const images = {
@@ -28,7 +29,6 @@ function App() {
 
   const initialiseBackend = async () => {
     await tf.setBackend("webgl");
-    // console.log("Using WebGL backend for TensorFlow.js");
   };
 
   initialiseBackend();
@@ -58,7 +58,7 @@ function App() {
           paperGesture,
           scissorsGesture,
         ]);
-        const gesture = await GE.estimate(hand[0].landmarks, 8);
+        const gesture = GE.estimate(hand[0].landmarks, 8);
         if (gesture.gestures !== undefined && gesture.gestures.length > 0) {
           const confidence = gesture.gestures.map(
             (prediction) => prediction.score
@@ -67,7 +67,6 @@ function App() {
             Math.max.apply(null, confidence)
           );
           const detectedGesture = gesture.gestures[maxConfidence].name;
-          // console.log(detectedGesture);
           setEmoji(detectedGesture); // Update the UI
           setUserChoice(detectedGesture);
         }
@@ -75,16 +74,11 @@ function App() {
     }
   };
 
-  console.log(userChoice);
-
   let isRunning = false;
 
   const runHandpose = async () => {
-    // const modelUrl =
-    //   "http://localhost:5050/model/handskeleton/tfJs/default/1/model.json";
     try {
       const net = await handpose.load(); // Load handpose model
-      // console.log("Handpose model loaded");
 
       isRunning = true; // Enable the detection loop to start
 
@@ -125,15 +119,41 @@ function App() {
         choice = "scissors";
         break;
     }
-
     setMachineChoice(choice); // Set the machine's choice
-    console.log(choice);
   }
 
-  useEffect(() => {
-    runHandpose();
+  function determineWinner() {
+    let outcome = "";
+    if (userChoice === machineChoice) {
+      outcome = "It's a tie game";
+    } else if (userChoice === "rock" && machineChoice === "paper") {
+      outcome = "Computer wins";
+    } else if (userChoice === "paper" && machineChoice === "scissors") {
+      outcome = "Computer wins";
+    } else if (userChoice === "scissors" && machineChoice === "rock") {
+      outcome = "Computer wins";
+    } else {
+      outcome = "You win!";
+    }
+    setResult(outcome);
+  }
+
+  const playGame = async () => {
+    await runHandpose();
     machineResponse();
+  };
+
+  useEffect(() => {
+    playGame();
   }, []);
+
+  // Only running on mount
+  useEffect(() => {
+    // Logic: Run playGame only if X or Y is defined
+    if (userChoice && machineChoice) {
+      determineWinner();
+    }
+  }, [userChoice, machineChoice]); // Run on mount AND when state variable X or Y changes
 
   return (
     <>
@@ -199,6 +219,7 @@ function App() {
           ""
         )}
       </div>
+      <div className="result">{result && <p>{result}</p>}</div>
     </>
   );
 }
