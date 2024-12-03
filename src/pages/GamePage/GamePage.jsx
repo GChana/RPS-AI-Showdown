@@ -9,6 +9,7 @@ import scissorsImg from "../../assets/scissors.png";
 import { machineResponse } from "../../utils/machineResponse.mjs";
 import { determineWinner } from "../../utils/determineWinner.mjs";
 import { runHandpose } from "../../utils/HandDetection.mjs";
+import theRock from "../../assets/TheRockReady.png";
 
 import React from "react";
 
@@ -55,8 +56,13 @@ function GamePage() {
   };
 
   const playGame = async () => {
+    setResult("");
+    setMachineChoice("");
+    setUserChoice("");
     runHandpose(webcamRef, canvasRef, setUserChoice, setEmoji);
-    handleMachineResponse();
+    setTimeout(() => {
+      handleMachineResponse();
+    }, 3000);
   };
 
   useEffect(() => {
@@ -73,22 +79,36 @@ function GamePage() {
 
   return (
     <>
-      <div className="App">
-        <header className="App__header">
-          <Webcam className="cam" ref={webcamRef} />
-          <canvas className="cam" ref={canvasRef} />
-          {emoji !== null && (
-            <img className="emoji__player" src={images[emoji]} />
-          )}
-        </header>
-      </div>
-      {emoji !== null && (
-        <img className="emoji__machine" src={images[machineChoice]} />
-      )}
-      <div className="result">{result && <p>{result}</p>}</div>
-      <div className="score">
-        <p className="score__user">Your Score: {userScore}</p>
-        <p className="score__machine">Machine Score: {machineScore}</p>
+      <div className="game">
+        <div className="game__cams">
+          <header className="user">
+            <Webcam className="user__cam" ref={webcamRef} />
+            <canvas className="user__cam" ref={canvasRef} />
+            {emoji !== null && (
+              <img className="user__emoji" src={images[emoji]} />
+            )}
+          </header>
+          <div className="machine">
+            <div className="machine__cam">
+              <img className="machine__img" src={theRock} alt="The Rock" />
+            </div>
+            {emoji !== null && (
+              <img className="machine__emoji" src={images[machineChoice]} />
+            )}
+          </div>
+        </div>
+        <div className="game__outcome">
+          <p>You chose: {userChoice}</p>
+          <p>Machine chose: {machineChoice}</p>
+          <div className="result">{result && <p>{result}</p>}</div>
+          <div className="score">
+            <p className="score__user">Your Score: {userScore}</p>
+            <p className="score__machine">Machine Score: {machineScore}</p>
+            <button onClick={playGame} className="game__button">
+              START
+            </button>
+          </div>
+        </div>
       </div>
     </>
   );
