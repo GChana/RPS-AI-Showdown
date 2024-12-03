@@ -1,3 +1,5 @@
+import Player from "./player.mjs";
+
 function determineWinner(
   userChoice,
   machineChoice,
@@ -18,7 +20,7 @@ function determineWinner(
     setMachineScore((prevScore) => prevScore + 1);
   } else {
     outcome = "You win!";
-    setUserScore((prevScore) => prevScore + 1);
+    setUserScore((prevScore) => prevScore + 100);
   }
   return outcome;
 }

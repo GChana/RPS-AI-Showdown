@@ -9,11 +9,14 @@ import scissorsImg from "../../assets/scissors.png";
 import { machineResponse } from "../../utils/machineResponse.mjs";
 import { determineWinner } from "../../utils/determineWinner.mjs";
 import { runHandpose } from "../../utils/HandDetection.mjs";
-import theRock from "../../assets/TheRockReady.png";
+import theRockReady from "../../assets/TheRockReady.png";
+import theRockMad from "../../assets/TheRockMad.png";
+import theRockHappy from "../../assets/TheRockWin.png";
 
 import React from "react";
+import Player from "../../utils/player.mjs";
 
-function GamePage() {
+function GamePage({ userName }) {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
 
@@ -23,6 +26,11 @@ function GamePage() {
   const [emoji, setEmoji] = useState(null);
   const [userScore, setUserScore] = useState(0);
   const [machineScore, setMachineScore] = useState(0);
+  const [playerOne, setPlayerOne] = useState(new Player("Gurpreet", 2));
+  const [papyrus, setPapyrus] = useState(new Player("Papyrus", 2));
+  const [edward, setEdward] = useState(new Player("Edward Scissorhands", 2));
+  const [rocky, setRocky] = useState(new Player("The Rock", 2));
+  const [currentOpponent, setCurrentOpponent] = useState("placeholder", 2);
 
   const images = {
     rock: rockImg,
@@ -30,15 +38,21 @@ function GamePage() {
     scissors: scissorsImg,
   };
 
+  const opponents = [
+    new Player("Papyrus", 2),
+    new Player("Edward Scissorhands", 2),
+    new Player("The Rock", 2),
+  ];
+
+  let opponent = opponents[2];
+
+  console.log(opponent);
+
   const initialiseBackend = async () => {
     await tf.setBackend("webgl");
   };
 
   initialiseBackend();
-
-  const stopHandpose = () => {
-    isRunning = false;
-  };
 
   const handleMachineResponse = () => {
     const choice = machineResponse();
@@ -50,7 +64,9 @@ function GamePage() {
       userChoice,
       machineChoice,
       setUserScore,
-      setMachineScore
+      setMachineScore,
+      setRocky,
+      setPlayerOne
     );
     setResult(outcome);
   };
@@ -62,7 +78,7 @@ function GamePage() {
     runHandpose(webcamRef, canvasRef, setUserChoice, setEmoji);
     setTimeout(() => {
       handleMachineResponse();
-    }, 3000);
+    }, 2000);
   };
 
   useEffect(() => {
@@ -77,6 +93,14 @@ function GamePage() {
     }
   }, [userChoice, machineChoice]); // Run on mount AND when state variable X or Y changes
 
+  if (result === "You win!") {
+    opponent.health -= 1;
+  }
+
+  if (result === "Computer wins") {
+    playerOne.health -= 1;
+  }
+
   return (
     <>
       <div className="game">
@@ -90,7 +114,17 @@ function GamePage() {
           </header>
           <div className="machine">
             <div className="machine__cam">
-              <img className="machine__img" src={theRock} alt="The Rock" />
+              <img
+                className="machine__img"
+                src={
+                  playerOne.health === 0
+                    ? theRockHappy
+                    : rocky.health === 0
+                    ? theRockMad
+                    : theRockReady
+                }
+                alt="The Rock"
+              />
             </div>
             {emoji !== null && (
               <img className="machine__emoji" src={images[machineChoice]} />
@@ -99,11 +133,20 @@ function GamePage() {
         </div>
         <div className="game__outcome">
           <p>You chose: {userChoice}</p>
-          <p>Machine chose: {machineChoice}</p>
+          <p>
+            {opponent.name} chose: {machineChoice}
+          </p>
           <div className="result">{result && <p>{result}</p>}</div>
           <div className="score">
-            <p className="score__user">Your Score: {userScore}</p>
-            <p className="score__machine">Machine Score: {machineScore}</p>
+            <p className="score__user">
+              {userName}'s Score: {userScore}
+            </p>
+            <p className="score__machine">
+              {opponent.name} Health: {opponent.health}
+            </p>
+            <p className="score__machine">
+              {userName}'s Health: {playerOne.health}
+            </p>
             <button onClick={playGame} className="game__button">
               START
             </button>
