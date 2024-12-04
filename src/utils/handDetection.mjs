@@ -55,11 +55,9 @@ export const runHandpose = async (
   setUserChoice,
   setEmoji
 ) => {
-  let isRunning = false;
+  let isRunning = true;
   try {
     const net = await handpose.load(); // Load handpose model
-
-    isRunning = true; // Enable the detection loop to start
 
     const detectLoop = async () => {
       if (!isRunning) return; //Exit loop when stopRunning is called.
@@ -77,7 +75,7 @@ export const runHandpose = async (
 
     setTimeout(() => {
       isRunning = false;
-    }, 2000);
+    }, 500);
   } catch (error) {
     console.error("error loading handpose model", error); // Error handling for handpost model not returning
   }

@@ -24,3 +24,20 @@
     left: 580px;
   }
 }
+
+.history {
+  position: absolute;
+  bottom: 300px;
+
+  &__item {
+    list-style: none;
+  }
+}
+
+.user {
+  &__history {
+    &-emoji {
+      height: 20px;
+    }
+  }
+}

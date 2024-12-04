@@ -8,13 +8,13 @@ import paperImg from "../../assets/paper.png";
 import scissorsImg from "../../assets/scissors.png";
 import { machineResponse } from "../../utils/machineResponse.mjs";
 import { determineWinner } from "../../utils/determineWinner.mjs";
-import { runHandpose } from "../../utils/HandDetection.mjs";
+import { runHandpose } from "../../utils/handDetection.mjs";
 import theRockReady from "../../assets/TheRockReady.png";
 import theRockMad from "../../assets/TheRockMad.png";
 import theRockHappy from "../../assets/TheRockWin.png";
-
 import React from "react";
 import Player from "../../utils/player.mjs";
+import Countdown from "../../components/Countdown/Countdown";
 
 function GamePage({ userName }) {
   const webcamRef = useRef(null);
@@ -25,12 +25,15 @@ function GamePage({ userName }) {
   const [result, setResult] = useState("");
   const [emoji, setEmoji] = useState(null);
   const [userScore, setUserScore] = useState(0);
-  const [machineScore, setMachineScore] = useState(0);
   const [playerOne, setPlayerOne] = useState(new Player("Gurpreet", 2));
-  const [papyrus, setPapyrus] = useState(new Player("Papyrus", 2));
-  const [edward, setEdward] = useState(new Player("Edward Scissorhands", 2));
+  // const [papyrus, setPapyrus] = useState(new Player("Papyrus", 2));
+  // const [edward, setEdward] = useState(new Player("Edward Scissorhands", 2));
   const [rocky, setRocky] = useState(new Player("The Rock", 2));
-  const [currentOpponent, setCurrentOpponent] = useState("placeholder", 2);
+  // const [currentOpponent, setCurrentOpponent] = useState("placeholder", 2);
+  const [winner, setWinner] = useState("");
+  const [gameHistory, setGameHistory] = useState([]);
+  const [startCountdown, setStartCountdown] = useState(false);
+  // const [gameStarted, setGameStarted] = useState(false);
 
   const images = {
     rock: rockImg,
@@ -46,8 +49,6 @@ function GamePage({ userName }) {
 
   let opponent = opponents[2];
 
-  console.log(opponent);
-
   const initialiseBackend = async () => {
     await tf.setBackend("webgl");
   };
@@ -57,49 +58,63 @@ function GamePage({ userName }) {
   const handleMachineResponse = () => {
     const choice = machineResponse();
     setMachineChoice(choice);
+    console.log(choice);
   };
 
   const handleDetermineWinner = () => {
-    const outcome = determineWinner(
+    const { outcome, userScore: newScore } = determineWinner(
       userChoice,
       machineChoice,
-      setUserScore,
-      setMachineScore,
+      userScore,
       setRocky,
       setPlayerOne
     );
-    setResult(outcome);
+    if (outcome === "You win!") {
+      rocky.health -= 1;
+    }
+
+    if (outcome === "Computer wins") {
+      playerOne.health -= 1;
+    }
+
+    setGameHistory((prevHistory) => [
+      ...prevHistory,
+      { userChoice, machineChoice, outcome },
+    ]);
+
+    setUserScore(rocky.health === 0 ? newScore + 300 : newScore);
+    setWinner(outcome);
   };
 
   const playGame = async () => {
+    await runHandpose(webcamRef, canvasRef, setUserChoice, setEmoji);
     setResult("");
     setMachineChoice("");
     setUserChoice("");
-    runHandpose(webcamRef, canvasRef, setUserChoice, setEmoji);
-    setTimeout(() => {
-      handleMachineResponse();
-    }, 2000);
+    console.log("playgame actually starts at:", Date.now());
+    // setTimeout(() => {
+    handleMachineResponse();
+    // }, 2000);
   };
 
-  useEffect(() => {
+  const handleStartButtonClick = () => {
+    setStartCountdown(true);
+  };
+
+  const handleCountdownComplete = () => {
+    console.log("playgame starts at:", Date.now());
     playGame();
-  }, []);
+    setStartCountdown(false);
+  };
 
   // Only running on mount
   useEffect(() => {
-    // Logic: Run playGame only if X or Y is defined
-    if (userChoice && machineChoice) {
-      handleDetermineWinner();
-    }
+    setTimeout(() => {
+      if (userChoice && machineChoice) {
+        handleDetermineWinner();
+      }
+    }, 1000);
   }, [userChoice, machineChoice]); // Run on mount AND when state variable X or Y changes
-
-  if (result === "You win!") {
-    opponent.health -= 1;
-  }
-
-  if (result === "Computer wins") {
-    playerOne.health -= 1;
-  }
 
   return (
     <>
@@ -131,6 +146,29 @@ function GamePage({ userName }) {
             )}
           </div>
         </div>
+        <div className="history">
+          <ul className="history__list">
+            {gameHistory.map((game, index) => (
+              <li className="history__item" key={index}>
+                Round {index + 1}: {game.userChoice}{" "}
+                {emoji !== null && (
+                  <img
+                    className="user__history-emoji"
+                    src={images[game.userChoice]}
+                  />
+                )}{" "}
+                vs {game.machineChoice}{" "}
+                {emoji !== null && (
+                  <img
+                    className="user__history-emoji"
+                    src={images[game.machineChoice]}
+                  />
+                )}{" "}
+                - {game.outcome}
+              </li>
+            ))}
+          </ul>
+        </div>
         <div className="game__outcome">
           <p>You chose: {userChoice}</p>
           <p>
@@ -142,14 +180,26 @@ function GamePage({ userName }) {
               {userName}'s Score: {userScore}
             </p>
             <p className="score__machine">
-              {opponent.name} Health: {opponent.health}
+              {rocky.name} Health: {rocky.health}
             </p>
             <p className="score__machine">
               {userName}'s Health: {playerOne.health}
             </p>
-            <button onClick={playGame} className="game__button">
+            <div className="winner">{winner && <p>{winner}</p>}</div>
+            {/* <button onClick={playGame} className="game__button">
               START
-            </button>
+            </button> */}
+            <div className="countdown">
+              {!startCountdown && (
+                <button onClick={handleStartButtonClick}>START GAME</button>
+              )}
+              {startCountdown && (
+                <Countdown
+                  startCountdown={startCountdown}
+                  onCountdownComplete={handleCountdownComplete}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -1,22 +1,29 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
-const Countdown = ({ duration, onComplete }) => {
-  const [timeLeft, setTimeLeft] = useState(duration);
+function Countdown({ startCountdown, onCountdownComplete }) {
+  const [countdown, setCountdown] = useState(null);
 
   useEffect(() => {
-    if (timeLeft <= 0) {
-      onComplete(); // Notify parent
-      return;
+    let interval;
+    if (startCountdown) {
+      let timer = 3;
+      setCountdown(timer);
+
+      const interval = setInterval(() => {
+        timer -= 1;
+        setCountdown(timer);
+
+        if (timer <= 0) {
+          clearInterval(interval);
+          setCountdown(null);
+          onCountdownComplete();
+        }
+      }, 1000);
     }
+    return () => clearInterval(interval);
+  }, [startCountdown]);
 
-    const timer = setTimeout(() => {
-      setTimeLeft((prev) => prev - 1);
-    }, 1000);
-
-    return () => clearTimeout(timer); // Clean up on unmount
-  }, [timeLeft, onComplete]);
-
-  return <div>{timeLeft > 0 ? <p>Detecting in {timeLeft}...</p> : null}</div>;
-};
+  return <>{countdown !== null && <h1>{countdown}</h1>}</>;
+}
 
 export default Countdown;
