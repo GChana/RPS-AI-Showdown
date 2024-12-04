@@ -16,7 +16,7 @@ import React from "react";
 import Player from "../../utils/player.mjs";
 import Countdown from "../../components/Countdown/Countdown";
 
-function GamePage({ userName }) {
+function GamePage() {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
 
@@ -34,6 +34,8 @@ function GamePage({ userName }) {
   const [gameHistory, setGameHistory] = useState([]);
   const [startCountdown, setStartCountdown] = useState(false);
   // const [gameStarted, setGameStarted] = useState(false);
+
+  const userName = localStorage.getItem("name");
 
   const images = {
     rock: rockImg,
@@ -92,18 +94,18 @@ function GamePage({ userName }) {
     setMachineChoice("");
     setUserChoice("");
     console.log("playgame actually starts at:", Date.now());
-    // setTimeout(() => {
-    handleMachineResponse();
-    // }, 2000);
+    setTimeout(() => {
+      handleMachineResponse();
+    }, 2000);
   };
 
   const handleStartButtonClick = () => {
+    playGame();
     setStartCountdown(true);
   };
 
   const handleCountdownComplete = () => {
     console.log("playgame starts at:", Date.now());
-    playGame();
     setStartCountdown(false);
   };
 
@@ -115,6 +117,11 @@ function GamePage({ userName }) {
       }
     }, 1000);
   }, [userChoice, machineChoice]); // Run on mount AND when state variable X or Y changes
+
+  // useEffect to set userScore to local storage for Highscore page
+  useEffect(() => {
+    localStorage.setItem("score", userScore);
+  }, [userScore]);
 
   return (
     <>
@@ -132,9 +139,9 @@ function GamePage({ userName }) {
               <img
                 className="machine__img"
                 src={
-                  playerOne.health === 0
+                  playerOne.health <= 0
                     ? theRockHappy
-                    : rocky.health === 0
+                    : rocky.health <= 0
                     ? theRockMad
                     : theRockReady
                 }

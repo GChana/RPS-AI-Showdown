@@ -1,7 +1,12 @@
+import { useEffect } from "react";
 import "./HomePage.scss";
 import { Link } from "react-router";
 
 function HomePage({ userName, handleUserNameSubmit }) {
+  useEffect(() => {
+    localStorage.setItem("name", userName);
+  }, [userName]);
+
   return (
     <>
       <h1 className="title">Rock Paper Scissors AI Showdown</h1>

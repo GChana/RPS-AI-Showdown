@@ -14,6 +14,7 @@ function machineResponse() {
       choice = "scissors";
       break;
   } // Set the machine's choice
+
   return choice;
 }
 

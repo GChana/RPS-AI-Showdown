@@ -77,7 +77,7 @@ export const runHandpose = async (
 
     setTimeout(() => {
       isRunning = false;
-    }, 500);
+    }, 2000);
   } catch (error) {
     console.error("error loading handpose model", error); // Error handling for handpost model not returning
   }
