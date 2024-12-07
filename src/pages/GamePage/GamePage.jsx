@@ -2,32 +2,30 @@ import { useState, useRef, useEffect } from "react";
 import "./GamePage.scss";
 import * as tf from "@tensorflow/tfjs";
 import "@tensorflow/tfjs-backend-webgl";
-import Webcam from "react-webcam";
 import rockImg from "../../assets/rock.png";
 import paperImg from "../../assets/paper.png";
 import scissorsImg from "../../assets/scissors.png";
 import { machineResponse } from "../../utils/machineResponse.mjs";
 import { determineWinner } from "../../utils/determineWinner.mjs";
 import { runHandpose } from "../../utils/handDetection.mjs";
-import theRockReady from "../../assets/TheRockReady.png";
-import theRockMad from "../../assets/TheRockMad.png";
-import theRockHappy from "../../assets/TheRockWin.png";
 import React from "react";
 import Player from "../../utils/player.mjs";
 import Countdown from "../../components/Countdown/Countdown";
 import papyrusReady from "../../assets/PapyrusReady.png";
-import papyrusHappy from "../../assets/PapyrusHappy.png";
-import papyrusMad from "../../assets/PapyrusMad.png";
 import edwardReady from "../../assets/EdwardReady.png";
-import edwardHappy from "../../assets/EdwardHappy.png";
-import edwardMad from "../../assets/EdwardSad.png";
+import theRockReady from "../../assets/TheRockReady.png";
 import axios from "axios";
 import LoadNextLevel from "../../components/LoadNextLevel/LoadNextLevel";
+import DefeatScreen from "../../components/DefeatScreen/DefeatScreen";
+import Cams from "../../components/Cams/Cams";
+import History from "../../components/History/History";
+import HealthBar from "../../components/HealthBar/HealthBar";
+import NavBar from "../../components/NavBar/NavBar";
 
 const opponents = [
   new Player("Papyrus", 1),
   new Player("Edward Scissorhands", 1),
-  new Player("The Rock", 2),
+  new Player("The Rock", 1),
 ];
 
 const API = import.meta.env.VITE_API;
@@ -41,33 +39,30 @@ function GamePage() {
   const [result, setResult] = useState("");
   const [emoji, setEmoji] = useState(null);
   const [userScore, setUserScore] = useState(0);
-  const [playerOne, setPlayerOne] = useState(new Player("Gurpreet", 2));
+  const [playerOne, setPlayerOne] = useState(new Player("", 2));
   const [winner, setWinner] = useState("");
   const [gameHistory, setGameHistory] = useState([]);
   const [startCountdown, setStartCountdown] = useState(false);
   const [currentOpponent, setCurrentOpponent] = useState(opponents[0]);
-  const [currentOpponentIndex, setCurrentOpponentIndex] = useState(0);
-  const [transitioning, setTransitioning] = useState(false);
   const [level, setLevel] = useState(0);
-
   const [loadNextLevel, setloadNextLevel] = useState(false);
-
+  const [defeatScreen, setDefeatScreen] = useState(false);
   const [response, setResponse] = useState("");
 
   const userName = localStorage.getItem("name");
-  console.log(currentOpponent);
 
-  // this useEffect will trigger whenever there's a change loadNextLevel
-  // flips it after 2 seconds
-  // useEffect(() => {
-  //   if (loadNextLevel) {
-  //     setTimeout(() => {
-  //       setloadNextLevel(false);
-  //       setCurrentOpponent(opponents[level + 1]);
-  //       setLevel(level + 1);
-  //     }, 10000);
-  //   }
-  // }, [loadNextLevel]);
+  const characterRevenge = async () => {
+    setResponse("");
+
+    const currentOpponentFormatted = encodeURIComponent(
+      currentOpponent.name.toLowerCase().replace(" ", "-")
+    );
+    console.log(currentOpponentFormatted);
+    const response = await axios.get(
+      `${API}/revenge/${currentOpponentFormatted}`
+    );
+    setResponse(response.data.response);
+  };
 
   const characterTaunt = async () => {
     setResponse("");
@@ -77,48 +72,41 @@ function GamePage() {
     );
     console.log(currentOpponentFormatted);
     const response = await axios.get(
-      `${API}/characters/${currentOpponentFormatted}`
+      `${API}/taunt/${currentOpponentFormatted}`
     );
     setResponse(response.data.response);
   };
-  // this useEffect triggeres
-  // whenever there's a change in opponent
+
   useEffect(() => {
-    // win level condition
     if (currentOpponent.health === 0) {
       console.log(currentOpponent.health);
-      setPlayerOne.health = 2;
-      // setCurrentOpponent.health = 2;
+      setPlayerOne((prevPlayerOne) => ({
+        ...prevPlayerOne,
+        health: 2,
+      }));
       setEmoji(null);
 
       if (level === 3) {
         alert("YOU WON!");
-        // navigate to winning page
       } else {
-        // API CALLS WILL HAPPEN HERE!
-        characterTaunt();
-        // if (currentOpponent.name === "Papyrus") {
-        //   characterTaunt("papyrus");
-        // }
-        // if (currentOpponent.name === "Edward Scissorhands") {
-        //   characterTaunt("edwardscissorhands");
-        // }
-        // if (currentOpponent.name === "The Rock") {
-        //   characterTaunt("therock");
-        // }
+        characterRevenge();
         setloadNextLevel(true);
       }
     }
   }, [currentOpponent]);
+
+  useEffect(() => {
+    if (playerOne.health === 0) {
+      characterTaunt();
+      setDefeatScreen(true);
+    }
+  }, [playerOne.health]);
 
   const images = {
     rock: rockImg,
     paper: paperImg,
     scissors: scissorsImg,
   };
-
-  let opponent = opponents[0];
-  console.log(opponent.health);
 
   const initialiseBackend = async () => {
     await tf.setBackend("webgl");
@@ -129,7 +117,6 @@ function GamePage() {
   const handleMachineResponse = () => {
     const choice = machineResponse();
     setMachineChoice("scissors");
-    console.log(choice);
   };
 
   const handleDetermineWinner = () => {
@@ -145,7 +132,6 @@ function GamePage() {
         ...currentOpponent,
         health: currentOpponent.health - 1,
       });
-      console.log(opponent.health);
     }
 
     if (outcome === "Computer wins") {
@@ -158,9 +144,9 @@ function GamePage() {
     ]);
 
     if (currentOpponent.health === 0) {
+      console.log(currentOpponent.health);
       setUserScore((prevScore) => prevScore + 300);
     }
-
     setWinner(outcome);
   };
 
@@ -169,7 +155,6 @@ function GamePage() {
     setResult("");
     setMachineChoice("");
     setUserChoice("");
-    console.log("playgame actually starts at:", Date.now());
     setTimeout(() => {
       handleMachineResponse();
     }, 1000);
@@ -181,7 +166,6 @@ function GamePage() {
   };
 
   const handleCountdownComplete = () => {
-    console.log("playgame starts at:", Date.now());
     setStartCountdown(false);
   };
 
@@ -208,12 +192,22 @@ function GamePage() {
   if (loadNextLevel) {
     return (
       <LoadNextLevel
+        setUserChoice={setUserChoice}
+        setMachineChoice={setMachineChoice}
         response={response}
         currentOpponent={currentOpponent}
-        papyrusMad={papyrusMad}
-        edwardMad={edwardMad}
-        theRockMad={theRockMad}
         goToNextLevel={goToNextLevel}
+      />
+    );
+  }
+
+  if (defeatScreen) {
+    return (
+      <DefeatScreen
+        setUserChoice={setUserChoice}
+        setMachineChoice={setMachineChoice}
+        response={response}
+        currentOpponent={currentOpponent}
       />
     );
   }
@@ -221,106 +215,45 @@ function GamePage() {
   return (
     <>
       <div className="game">
-        <div className="game__cams">
-          <header className="user">
-            <Webcam className="user__cam" ref={webcamRef} />
-            <canvas className="user__cam" ref={canvasRef} />
-            {emoji !== null && (
-              <img className="user__emoji" src={images[emoji]} />
-            )}
-          </header>
-          <div className="machine">
-            <div className="machine__cam">
-              {currentOpponent.name === "Papyrus" ? (
-                <img
-                  className="machine__img"
-                  src={
-                    playerOne.health <= 0
-                      ? papyrusHappy
-                      : opponent.health <= 0
-                      ? papyrusMad
-                      : papyrusReady
-                  }
-                  alt="Image of Papyrus"
-                />
-              ) : currentOpponent.name === "Edward Scissorhands" ? (
-                <img
-                  className="machine__img"
-                  src={
-                    playerOne.health <= 0
-                      ? edwardHappy
-                      : opponent.health <= 0
-                      ? edwardMad
-                      : edwardReady
-                  }
-                  alt="Image of Edward Scissorhands"
-                />
-              ) : (
-                <img
-                  className="machine__img"
-                  src={
-                    playerOne.health <= 0
-                      ? theRockHappy
-                      : opponent.health <= 0
-                      ? theRockMad
-                      : theRockReady
-                  }
-                  alt="Image of The Rock"
-                />
-              )}
-            </div>
-            {emoji !== null && (
-              <img className="machine__emoji" src={images[machineChoice]} />
-            )}
-          </div>
+        <h1 className="game__title">
+          {userName} VS {currentOpponent.name}
+        </h1>
+        <NavBar />
+        <div className="healthbars">
+          <HealthBar
+            userName={userName}
+            playerOne={playerOne}
+            currentOpponent={currentOpponent}
+          />
         </div>
-        <div className="history">
-          <ul className="history__list">
-            {gameHistory.map((game, index) => (
-              <li className="history__item" key={index}>
-                Round {index + 1}: {game.userChoice}{" "}
-                {emoji !== null && (
-                  <img
-                    className="user__history-emoji"
-                    src={images[game.userChoice]}
-                  />
-                )}{" "}
-                vs {game.machineChoice}{" "}
-                {emoji !== null && (
-                  <img
-                    className="user__history-emoji"
-                    src={images[game.machineChoice]}
-                  />
-                )}{" "}
-                - {game.outcome}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="game__outcome">
-          <h2>Current level: {level}</h2>
-          <p>You chose: {userChoice}</p>
-          <p>
-            {currentOpponent.name} chose: {machineChoice}
-          </p>
-          <div className="result">{result && <p>{result}</p>}</div>
-          <div className="score">
-            <p className="score__user">
+        <Cams
+          webcamRef={webcamRef}
+          canvasRef={canvasRef}
+          images={images}
+          emoji={emoji}
+          currentOpponent={currentOpponent}
+          papyrusReady={papyrusReady}
+          edwardReady={edwardReady}
+          theRockReady={theRockReady}
+          machineChoice={machineChoice}
+        />
+        <div className="game__details">
+          <History gameHistory={gameHistory} images={images} emoji={emoji} />
+          <div className="game__outcome">
+            <p className="game__outcome-details">
               {userName}'s Score: {userScore}
             </p>
-            <p className="score__machine">
-              {currentOpponent.name} Health: {currentOpponent.health}
-            </p>
-            <p className="score__machine">
-              {userName}'s Health: {playerOne.health}
-            </p>
-            <div className="winner">{winner && <p>{winner}</p>}</div>
-            {/* <button onClick={playGame} className="game__button">
-              START
-            </button> */}
-            <div className="countdown">
+            <div className="game__outcome-details">
+              {winner && <p>{winner}</p>}
+            </div>
+            <div className="game__outcome-details">
               {!startCountdown && (
-                <button onClick={handleStartButtonClick}>START GAME</button>
+                <button
+                  className="game__outcome-button"
+                  onClick={handleStartButtonClick}
+                >
+                  START GAME
+                </button>
               )}
               {startCountdown && (
                 <Countdown
@@ -329,6 +262,9 @@ function GamePage() {
                 />
               )}
             </div>
+          </div>
+          <div className="character__sheet">
+            <p className="character__sheet-text">Placeholder text</p>
           </div>
         </div>
       </div>

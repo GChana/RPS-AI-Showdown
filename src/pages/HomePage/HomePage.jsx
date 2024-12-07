@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import "./HomePage.scss";
 import { Link } from "react-router";
+import NavBar from "../../components/NavBar/NavBar";
 
 function HomePage({ userName, handleUserNameSubmit }) {
   useEffect(() => {
@@ -9,17 +10,22 @@ function HomePage({ userName, handleUserNameSubmit }) {
 
   return (
     <>
-      <h1 className="title">Rock Paper Scissors AI Showdown</h1>
+      <header className="header">
+        <h1 className="header__title">
+          Rock Paper Scissors{" "}
+          <span className="header__title--fontstyle">AI Showdown</span>
+        </h1>
+      </header>
+      <NavBar />
       <div className="main">
         <form name="name" className="form">
-          <label className="form__label">Please enter a username</label>
           <input
             className="form__input"
             name="name"
             type="text"
             onChange={handleUserNameSubmit}
             value={userName}
-            placeholder="username..."
+            placeholder="Enter username"
           />
           <Link to="/game">
             <button className="form__button" type="submit">

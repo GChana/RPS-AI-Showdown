@@ -1,0 +1,16 @@
+.history {
+  max-height: 9rem;
+  overflow: scroll;
+
+  &__title {
+    padding-bottom: 1rem;
+  }
+
+  &__item {
+    font-size: 1rem;
+    list-style: none;
+  }
+  &__emoji {
+    height: 1.875rem;
+  }
+}

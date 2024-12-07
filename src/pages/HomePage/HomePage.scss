@@ -1,15 +1,21 @@
-@use "../../styles/resets";
-
-.title {
+.header {
   display: flex;
-  align-items: center;
   justify-content: center;
-  height: 20vh;
-  text-align: center;
-  background-color: #364688;
-  color: white;
-  border: 5px solid black;
-  border-style: inset;
+  align-items: center;
+  &__title {
+    display: block;
+    height: 20vh;
+    text-align: center;
+    background-color: #364688;
+    width: 100%;
+    color: white;
+    border: 5px solid black;
+    padding: 2rem;
+
+    &--fontstyle {
+      display: block;
+    }
+  }
 }
 
 .main {
@@ -25,16 +31,6 @@
 .form {
   display: flex;
   flex-direction: column;
-  &__label {
-    padding: 1rem;
-    display: block;
-    font-size: 30px;
-    margin-bottom: 1.25rem;
-    background-color: #861760;
-    color: white;
-    border-radius: 12px;
-    font-size: 2rem;
-  }
   &__input {
     padding: 1rem;
     border-radius: 12px;

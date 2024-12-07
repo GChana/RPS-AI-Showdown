@@ -4,6 +4,7 @@ import GamePage from "./pages/GamePage/GamePage";
 import HomePage from "./pages/HomePage/HomePage";
 import HighscorePage from "./pages/HighscorePage/HighscorePage";
 import { useState } from "react";
+import AboutPage from "./pages/About/AboutPage";
 
 function App() {
   const [userName, setUserName] = useState("");
@@ -28,6 +29,7 @@ function App() {
           />
           <Route path="/game" element={<GamePage userName={userName} />} />
           <Route path="/highscore" element={<HighscorePage />} />
+          <Route path="/about" element={<AboutPage />} />
         </Routes>
       </BrowserRouter>
     </>

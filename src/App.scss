@@ -1,49 +1,49 @@
 @use "./styles/resets";
 
-.game {
-  &__cams {
-    display: flex;
-  }
+// .game {
+//   &__cams {
+//     display: flex;
+//   }
 
-  &__outcome {
-    position: absolute;
-    bottom: 300px;
-    left: 600px;
-    text-align: center;
-  }
-}
+//   &__outcome {
+//     position: absolute;
+//     bottom: 300px;
+//     left: 600px;
+//     text-align: center;
+//   }
+// }
 
-.user {
-  &__cam {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-  }
-  &__emoji {
-    position: absolute;
-    top: 50px;
-    left: 500px;
-    height: 100px;
-  }
-}
+// .user {
+//   &__cam {
+//     position: absolute;
+//     top: 0px;
+//     left: 0px;
+//   }
+//   &__emoji {
+//     position: absolute;
+//     top: 50px;
+//     left: 500px;
+//     height: 100px;
+//   }
+// }
 
-.machine {
-  &__cam {
-    width: 550px;
-    height: 450px;
-    position: absolute;
-    top: 0px;
-    right: 0px;
-  }
+// .machine {
+//   &__cam {
+//     width: 550px;
+//     height: 450px;
+//     position: absolute;
+//     top: 0px;
+//     right: 0px;
+//   }
 
-  &__img {
-    height: 480px;
-    width: 550px;
-  }
-  &__emoji {
-    position: absolute;
-    height: 100px;
-    top: 50px;
-    right: 50px;
-  }
-}
+//   &__img {
+//     height: 480px;
+//     width: 550px;
+//   }
+//   &__emoji {
+//     position: absolute;
+//     height: 100px;
+//     top: 50px;
+//     right: 50px;
+//   }
+// }

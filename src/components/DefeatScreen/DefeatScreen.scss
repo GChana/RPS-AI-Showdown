@@ -1,17 +1,17 @@
-.level {
+.defeat {
   display: flex;
   flex-direction: column;
   align-items: center;
   height: 100vh;
-  background-image: url("../../assets/LoadNextLevelBackdrop.png");
+  background-image: url("../../assets/championshipStage.png");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   color: white;
   &__response {
-    width: 80%;
+    width: 50%;
     text-align: center;
-    margin-top: 2rem;
+    margin-top: 4rem;
     padding: 1rem;
     background-color: rgb(#000000, 0.7);
     border-radius: 12px;
@@ -19,7 +19,7 @@
   &__img {
     height: 30rem;
     border-radius: 12px;
-    margin-top: 2rem;
+    margin-top: 4rem;
   }
   &__message {
     font-size: 1.875rem;
