@@ -1,3 +1,5 @@
+@use "./styles/resets";
+
 .game {
   &__cams {
     display: flex;

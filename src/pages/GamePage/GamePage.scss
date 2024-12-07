@@ -4,24 +4,12 @@
   left: 200px;
 }
 
-.emoji {
-  &__player {
-    position: relative;
-    left: 780px;
-    top: 50px;
-    height: 100px;
-  }
-  &__machine {
-    // position: absolute;
-    height: 100px;
-  }
-}
-
 .game {
   &__outcome {
     position: absolute;
     bottom: 170px;
     left: 580px;
+    font-size: 1.5rem;
   }
 }
 
@@ -39,5 +27,10 @@
     &-emoji {
       height: 20px;
     }
+  }
+}
+
+.level {
+  &__response {
   }
 }

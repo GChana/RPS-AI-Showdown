@@ -1,0 +1,52 @@
+@use "../../styles/resets";
+
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20vh;
+  text-align: center;
+  background-color: #364688;
+  color: white;
+  border: 5px solid black;
+  border-style: inset;
+}
+
+.main {
+  display: flex;
+  height: 80vh;
+  justify-content: center;
+  align-items: center;
+  background-image: url("../../assets/RPSBattle.png");
+  background-position: center;
+  background-size: cover;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  &__label {
+    padding: 1rem;
+    display: block;
+    font-size: 30px;
+    margin-bottom: 1.25rem;
+    background-color: #861760;
+    color: white;
+    border-radius: 12px;
+    font-size: 2rem;
+  }
+  &__input {
+    padding: 1rem;
+    border-radius: 12px;
+    font-size: 1.5rem;
+  }
+  &__button {
+    margin-top: 1rem;
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 2rem;
+    border-radius: 12px;
+    background-color: #329e1b;
+    border-style: groove;
+  }
+}

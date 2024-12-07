@@ -2,6 +2,7 @@ import "./App.scss";
 import { BrowserRouter, Route, Routes } from "react-router";
 import GamePage from "./pages/GamePage/GamePage";
 import HomePage from "./pages/HomePage/HomePage";
+import HighscorePage from "./pages/HighscorePage/HighscorePage";
 import { useState } from "react";
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
             }
           />
           <Route path="/game" element={<GamePage userName={userName} />} />
+          <Route path="/highscore" element={<HighscorePage />} />
         </Routes>
       </BrowserRouter>
     </>

@@ -15,6 +15,22 @@ import theRockHappy from "../../assets/TheRockWin.png";
 import React from "react";
 import Player from "../../utils/player.mjs";
 import Countdown from "../../components/Countdown/Countdown";
+import papyrusReady from "../../assets/PapyrusReady.png";
+import papyrusHappy from "../../assets/PapyrusHappy.png";
+import papyrusMad from "../../assets/PapyrusMad.png";
+import edwardReady from "../../assets/EdwardReady.png";
+import edwardHappy from "../../assets/EdwardHappy.png";
+import edwardMad from "../../assets/EdwardSad.png";
+import axios from "axios";
+import LoadNextLevel from "../../components/LoadNextLevel/LoadNextLevel";
+
+const opponents = [
+  new Player("Papyrus", 1),
+  new Player("Edward Scissorhands", 1),
+  new Player("The Rock", 2),
+];
+
+const API = import.meta.env.VITE_API;
 
 function GamePage() {
   const webcamRef = useRef(null);
@@ -26,16 +42,74 @@ function GamePage() {
   const [emoji, setEmoji] = useState(null);
   const [userScore, setUserScore] = useState(0);
   const [playerOne, setPlayerOne] = useState(new Player("Gurpreet", 2));
-  // const [papyrus, setPapyrus] = useState(new Player("Papyrus", 2));
-  // const [edward, setEdward] = useState(new Player("Edward Scissorhands", 2));
-  const [rocky, setRocky] = useState(new Player("The Rock", 2));
-  // const [currentOpponent, setCurrentOpponent] = useState("placeholder", 2);
   const [winner, setWinner] = useState("");
   const [gameHistory, setGameHistory] = useState([]);
   const [startCountdown, setStartCountdown] = useState(false);
-  // const [gameStarted, setGameStarted] = useState(false);
+  const [currentOpponent, setCurrentOpponent] = useState(opponents[0]);
+  const [currentOpponentIndex, setCurrentOpponentIndex] = useState(0);
+  const [transitioning, setTransitioning] = useState(false);
+  const [level, setLevel] = useState(0);
+
+  const [loadNextLevel, setloadNextLevel] = useState(false);
+
+  const [response, setResponse] = useState("");
 
   const userName = localStorage.getItem("name");
+  console.log(currentOpponent);
+
+  // this useEffect will trigger whenever there's a change loadNextLevel
+  // flips it after 2 seconds
+  // useEffect(() => {
+  //   if (loadNextLevel) {
+  //     setTimeout(() => {
+  //       setloadNextLevel(false);
+  //       setCurrentOpponent(opponents[level + 1]);
+  //       setLevel(level + 1);
+  //     }, 10000);
+  //   }
+  // }, [loadNextLevel]);
+
+  const characterTaunt = async () => {
+    setResponse("");
+
+    const currentOpponentFormatted = encodeURIComponent(
+      currentOpponent.name.toLowerCase().replace(" ", "-")
+    );
+    console.log(currentOpponentFormatted);
+    const response = await axios.get(
+      `${API}/characters/${currentOpponentFormatted}`
+    );
+    setResponse(response.data.response);
+  };
+  // this useEffect triggeres
+  // whenever there's a change in opponent
+  useEffect(() => {
+    // win level condition
+    if (currentOpponent.health === 0) {
+      console.log(currentOpponent.health);
+      setPlayerOne.health = 2;
+      // setCurrentOpponent.health = 2;
+      setEmoji(null);
+
+      if (level === 3) {
+        alert("YOU WON!");
+        // navigate to winning page
+      } else {
+        // API CALLS WILL HAPPEN HERE!
+        characterTaunt();
+        // if (currentOpponent.name === "Papyrus") {
+        //   characterTaunt("papyrus");
+        // }
+        // if (currentOpponent.name === "Edward Scissorhands") {
+        //   characterTaunt("edwardscissorhands");
+        // }
+        // if (currentOpponent.name === "The Rock") {
+        //   characterTaunt("therock");
+        // }
+        setloadNextLevel(true);
+      }
+    }
+  }, [currentOpponent]);
 
   const images = {
     rock: rockImg,
@@ -43,13 +117,8 @@ function GamePage() {
     scissors: scissorsImg,
   };
 
-  const opponents = [
-    new Player("Papyrus", 2),
-    new Player("Edward Scissorhands", 2),
-    new Player("The Rock", 2),
-  ];
-
-  let opponent = opponents[2];
+  let opponent = opponents[0];
+  console.log(opponent.health);
 
   const initialiseBackend = async () => {
     await tf.setBackend("webgl");
@@ -59,20 +128,24 @@ function GamePage() {
 
   const handleMachineResponse = () => {
     const choice = machineResponse();
-    setMachineChoice(choice);
+    setMachineChoice("scissors");
     console.log(choice);
   };
 
   const handleDetermineWinner = () => {
-    const { outcome, userScore: newScore } = determineWinner(
+    const { outcome } = determineWinner(
       userChoice,
       machineChoice,
-      userScore,
-      setRocky,
+      setUserScore,
       setPlayerOne
     );
+
     if (outcome === "You win!") {
-      rocky.health -= 1;
+      setCurrentOpponent({
+        ...currentOpponent,
+        health: currentOpponent.health - 1,
+      });
+      console.log(opponent.health);
     }
 
     if (outcome === "Computer wins") {
@@ -84,7 +157,10 @@ function GamePage() {
       { userChoice, machineChoice, outcome },
     ]);
 
-    setUserScore(rocky.health === 0 ? newScore + 300 : newScore);
+    if (currentOpponent.health === 0) {
+      setUserScore((prevScore) => prevScore + 300);
+    }
+
     setWinner(outcome);
   };
 
@@ -96,7 +172,7 @@ function GamePage() {
     console.log("playgame actually starts at:", Date.now());
     setTimeout(() => {
       handleMachineResponse();
-    }, 2000);
+    }, 1000);
   };
 
   const handleStartButtonClick = () => {
@@ -109,19 +185,38 @@ function GamePage() {
     setStartCountdown(false);
   };
 
+  const goToNextLevel = () => {
+    setloadNextLevel(false);
+    setCurrentOpponent(opponents[level + 1]);
+    setLevel(level + 1);
+  };
+
   // Only running on mount
   useEffect(() => {
     setTimeout(() => {
       if (userChoice && machineChoice) {
         handleDetermineWinner();
       }
-    }, 1000);
+    }, 500);
   }, [userChoice, machineChoice]); // Run on mount AND when state variable X or Y changes
 
   // useEffect to set userScore to local storage for Highscore page
   useEffect(() => {
     localStorage.setItem("score", userScore);
   }, [userScore]);
+
+  if (loadNextLevel) {
+    return (
+      <LoadNextLevel
+        response={response}
+        currentOpponent={currentOpponent}
+        papyrusMad={papyrusMad}
+        edwardMad={edwardMad}
+        theRockMad={theRockMad}
+        goToNextLevel={goToNextLevel}
+      />
+    );
+  }
 
   return (
     <>
@@ -136,17 +231,43 @@ function GamePage() {
           </header>
           <div className="machine">
             <div className="machine__cam">
-              <img
-                className="machine__img"
-                src={
-                  playerOne.health <= 0
-                    ? theRockHappy
-                    : rocky.health <= 0
-                    ? theRockMad
-                    : theRockReady
-                }
-                alt="The Rock"
-              />
+              {currentOpponent.name === "Papyrus" ? (
+                <img
+                  className="machine__img"
+                  src={
+                    playerOne.health <= 0
+                      ? papyrusHappy
+                      : opponent.health <= 0
+                      ? papyrusMad
+                      : papyrusReady
+                  }
+                  alt="Image of Papyrus"
+                />
+              ) : currentOpponent.name === "Edward Scissorhands" ? (
+                <img
+                  className="machine__img"
+                  src={
+                    playerOne.health <= 0
+                      ? edwardHappy
+                      : opponent.health <= 0
+                      ? edwardMad
+                      : edwardReady
+                  }
+                  alt="Image of Edward Scissorhands"
+                />
+              ) : (
+                <img
+                  className="machine__img"
+                  src={
+                    playerOne.health <= 0
+                      ? theRockHappy
+                      : opponent.health <= 0
+                      ? theRockMad
+                      : theRockReady
+                  }
+                  alt="Image of The Rock"
+                />
+              )}
             </div>
             {emoji !== null && (
               <img className="machine__emoji" src={images[machineChoice]} />
@@ -177,9 +298,10 @@ function GamePage() {
           </ul>
         </div>
         <div className="game__outcome">
+          <h2>Current level: {level}</h2>
           <p>You chose: {userChoice}</p>
           <p>
-            {opponent.name} chose: {machineChoice}
+            {currentOpponent.name} chose: {machineChoice}
           </p>
           <div className="result">{result && <p>{result}</p>}</div>
           <div className="score">
@@ -187,7 +309,7 @@ function GamePage() {
               {userName}'s Score: {userScore}
             </p>
             <p className="score__machine">
-              {rocky.name} Health: {rocky.health}
+              {currentOpponent.name} Health: {currentOpponent.health}
             </p>
             <p className="score__machine">
               {userName}'s Health: {playerOne.health}

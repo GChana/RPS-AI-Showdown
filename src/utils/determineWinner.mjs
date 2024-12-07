@@ -1,4 +1,4 @@
-function determineWinner(userChoice, machineChoice, userScore) {
+function determineWinner(userChoice, machineChoice, setUserScore) {
   let outcome = "";
   if (userChoice === machineChoice) {
     outcome = "It's a tie game";
@@ -10,9 +10,9 @@ function determineWinner(userChoice, machineChoice, userScore) {
     outcome = "Computer wins";
   } else {
     outcome = "You win!";
-    userScore += 100;
+    setUserScore((prevScore) => prevScore + 100);
   }
-  return { outcome, userScore };
+  return { outcome };
 }
 
 export { determineWinner };
