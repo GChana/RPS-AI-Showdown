@@ -26,12 +26,14 @@ function About() {
           </p>
           <Link
             className="about__contact-info-link"
+            target="_blank"
             to="https://www.linkedin.com/in/gurpreet-chana-"
           >
             <p className="about__contact-info">LinkedIn</p>
           </Link>
           <Link
             className="about__contact-info-link"
+            target="_blank"
             to="https://github.com/GChana"
           >
             <p className="about__contact-info">GitHub</p>
