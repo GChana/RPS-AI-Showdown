@@ -194,6 +194,12 @@ function GamePage() {
     localStorage.setItem("score", userScore);
   }, [userScore]);
 
+  useEffect(() => {
+    setWinner("");
+    setUserChoice("");
+    setMachineChoice("");
+  }, []);
+
   if (loadNextLevel) {
     return (
       <LoadNextLevel
@@ -283,7 +289,33 @@ function GamePage() {
             </div>
           </div>
           <div className="character__sheet">
-            <h3 className="character__sheet-text">Placeholder text</h3>
+            {currentOpponent.name === "Papyrus" ? (
+              <h3 className="character__sheet-name">Papyrus</h3>
+            ) : currentOpponent.name === "Edward Scissorhands" ? (
+              <h3 className="character__sheet-name">Edward Scissorhands</h3>
+            ) : (
+              <h3 className="character__sheet-name">The Rock</h3>
+            )}
+            {currentOpponent.name === "Papyrus" ? (
+              <p className="character__sheet-bio">
+                Renowned scholar Papyrus, master of papyrus and undefeated
+                rock-paper-scissors champion, wielded both scroll and hand with
+                unparalleled skill.
+              </p>
+            ) : currentOpponent.name === "Edward Scissorhands" ? (
+              <p className="character__sheet-bio">
+                Edward Scissorhands, once a lonely inventor's creation,
+                transcended his scissor-hands to become a world-renowned
+                rock-paper-scissors champion, his unique appendages granting him
+                an unparalleled advantage.
+              </p>
+            ) : (
+              <p className="character__sheet-bio">
+                The Rock, after dominating the wrestling world, cemented his
+                legacy as a world-renowned rock-paper-scissors champion, his
+                "People's Rock" strategy proving unstoppable.
+              </p>
+            )}
           </div>
         </div>
       </div>

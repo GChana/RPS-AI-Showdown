@@ -30,7 +30,7 @@ function HomePage({
             type="text"
             onChange={handleUserNameChange}
             value={userName}
-            placeholder="Enter username"
+            placeholder="Enter username..."
           />
           <Link to="/game" onClick={handleUserNameSubmit}>
             <button

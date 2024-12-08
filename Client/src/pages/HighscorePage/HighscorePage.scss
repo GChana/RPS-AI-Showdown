@@ -36,3 +36,12 @@
     background-color: #329e1b;
   }
 }
+
+.character__sheet {
+  &-name {
+    padding-bottom: 1rem;
+  }
+  &-bio {
+    text-align: left;
+  }
+}

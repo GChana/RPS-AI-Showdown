@@ -4,7 +4,7 @@ import GamePage from "./pages/GamePage/GamePage";
 import HomePage from "./pages/HomePage/HomePage";
 import HighscorePage from "./pages/HighscorePage/HighscorePage";
 import { useState } from "react";
-import AboutPage from "./pages/About/AboutPage";
+import AboutPage from "./pages/AboutPage/AboutPage";
 
 function App() {
   const [userName, setUserName] = useState("");
