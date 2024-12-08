@@ -26,9 +26,9 @@ import {
 import NavBar from "../../components/NavBar/NavBar";
 
 const opponents = [
-  new Player("Papyrus", 1),
-  new Player("Edward Scissorhands", 1),
-  new Player("The Rock", 1),
+  new Player("Papyrus", 2),
+  new Player("Edward Scissorhands", 2),
+  new Player("The Rock", 2),
 ];
 
 const API = import.meta.env.VITE_API;
@@ -121,7 +121,7 @@ function GamePage() {
 
   const handleMachineResponse = () => {
     const choice = machineResponse();
-    setMachineChoice("scissors");
+    setMachineChoice(choice);
   };
 
   const handleDetermineWinner = () => {
@@ -298,8 +298,8 @@ function GamePage() {
             )}
             {currentOpponent.name === "Papyrus" ? (
               <p className="character__sheet-bio">
-                Renowned scholar Papyrus, master of papyrus and undefeated
-                rock-paper-scissors champion, wielded both scroll and hand with
+                Renowned scholar Papyrus, master of paper and undefeated
+                rock-paper-scissors champion, wields both scroll and hand with
                 unparalleled skill.
               </p>
             ) : currentOpponent.name === "Edward Scissorhands" ? (
