@@ -9,7 +9,7 @@
   background-size: cover;
   color: white;
   &__response {
-    width: 50%;
+    width: 80%;
     text-align: center;
     margin-top: 4rem;
     padding: 1rem;
@@ -29,8 +29,9 @@
     margin: 1rem 0;
   }
   &__button {
-    font-size: 1rem;
-    padding: 1rem;
+    padding: 1rem 3rem;
     border-radius: 12px;
+    font-size: 2rem;
+    background-color: #329e1b;
   }
 }
