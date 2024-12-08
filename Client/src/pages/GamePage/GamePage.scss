@@ -1,0 +1,44 @@
+.game {
+  // background-image: url("../../assets/GameScreenBackdrop.png");
+  // background-position: center;
+  // background-size: cover;
+  background-color: #2e2e2e;
+  height: 100vh;
+
+  &__cards {
+    display: grid;
+    grid-template-columns: 10fr 1fr 10fr;
+    gap: 16px;
+    padding: 1rem;
+    width: 100%;
+    text-align: center;
+    align-items: center;
+
+    &-divider-text {
+      font-size: 3rem;
+      color: white;
+    }
+  }
+
+  &__details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding: 1rem;
+    width: 100%;
+    text-align: center;
+    color: white;
+  }
+
+  &__outcome {
+    &-details {
+      padding-bottom: 1rem;
+    }
+    &-button {
+      padding: 1rem 3rem;
+      border-radius: 12px;
+      font-size: 2rem;
+      background-color: #329e1b;
+    }
+  }
+}

@@ -1,0 +1,75 @@
+.health {
+  overflow: visible;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-top: 1rem;
+  // margin: 0 1rem;
+
+  &__player {
+    width: 100%;
+    padding: 0 1rem;
+  }
+
+  &__opponent {
+    width: 100%;
+    padding: 0 1rem;
+  }
+
+  &__name {
+    font-size: 2rem;
+    text-align: left;
+    color: white;
+    &-opponent {
+      text-align: right;
+    }
+  }
+
+  &__max {
+    background-color: black;
+    width: 100%;
+    height: 40px;
+    border: 5px solid black;
+    // border-radius: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__full {
+    background-color: green;
+    width: 100%;
+    height: 30px;
+    // border-radius: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__half {
+    background-color: #fc2e20;
+    position: absolute;
+    // border-radius: 12px;
+    width: 50%;
+    z-index: 3;
+  }
+
+  &__empty {
+    background-color: #fc2e20;
+    position: absolute;
+    // border-radius: 12px;
+    width: 0%;
+    z-index: 3;
+  }
+
+  &__value {
+    color: white;
+    padding-left: 1rem;
+    padding-top: 0.3rem;
+    font-size: 1.25rem;
+    text-align: left;
+  }
+}
+
+.gap {
+  font-size: 3.125rem;
+  color: white;
+}

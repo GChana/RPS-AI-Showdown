@@ -1,0 +1,55 @@
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &__title {
+    display: block;
+    height: 15vh;
+    text-align: center;
+    background-color: #3f4566;
+    width: 100%;
+    color: white;
+    border: 5px solid black;
+    padding: 2rem;
+
+    &--fontstyle {
+      display: block;
+      font-family: Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+        "Helvetica Neue", sans-serif;
+    }
+  }
+}
+
+.main {
+  display: flex;
+  height: 81vh;
+  justify-content: center;
+  align-items: center;
+  background-image: url("../../assets/RPSBattle.png");
+  background-position: center;
+  background-size: cover;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  &__input {
+    padding: 1rem;
+    border-radius: 12px;
+    font-size: 1.5rem;
+  }
+  &__button {
+    margin-top: 1rem;
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 2rem;
+    border-radius: 12px;
+    background-color: #329e1b;
+    border-style: groove;
+  }
+
+  &__error {
+    color: red;
+    font-size: 2rem;
+  }
+}
