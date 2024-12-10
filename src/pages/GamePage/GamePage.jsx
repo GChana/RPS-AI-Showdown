@@ -51,7 +51,6 @@ function GamePage() {
   const [loadNextLevel, setloadNextLevel] = useState(false);
   const [defeatScreen, setDefeatScreen] = useState(false);
   const [response, setResponse] = useState("");
-  const [responseLoading, setResponseLoading] = useState(false);
 
   const userName = localStorage.getItem("name");
 
