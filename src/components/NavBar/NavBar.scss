@@ -9,10 +9,14 @@
     background-color: #c95337;
   }
 
+  &__link {
+    text-decoration: none;
+  }
+
   &__item {
     background-color: rgb(#000000, 0.7);
     list-style: none;
-    text-decoration: none;
+
     color: white;
     padding: 0.5rem;
     border-radius: 12px;
