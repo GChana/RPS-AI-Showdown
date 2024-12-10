@@ -15,9 +15,11 @@ function App() {
     setMessage("");
   };
 
-  const handleUserNameSubmit = (event) => {
+  const handleUserNameSubmit = () => {
     if (!userName.trim()) {
       setMessage("Please include a username for the best experience");
+    } else {
+      return true;
     }
   };
 
