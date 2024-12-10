@@ -62,7 +62,7 @@ function GamePage() {
       currentOpponent.name.toLowerCase().replace(" ", "-")
     );
     const response = await axios.get(
-      `http://localhost:5050/revenge/${currentOpponentFormatted}?userName=${encodeURIComponent(
+      `${API}/revenge/${currentOpponentFormatted}?userName=${encodeURIComponent(
         userName
       )}`
     );
@@ -76,7 +76,7 @@ function GamePage() {
       currentOpponent.name.toLowerCase().replace(" ", "-")
     );
     const response = await axios.get(
-      `http://localhost:5050/taunt/${currentOpponentFormatted}?userName=${encodeURIComponent(
+      `${API}/taunt/${currentOpponentFormatted}?userName=${encodeURIComponent(
         userName
       )}`
     );
