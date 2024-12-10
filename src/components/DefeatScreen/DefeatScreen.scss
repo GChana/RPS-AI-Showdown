@@ -1,0 +1,56 @@
+.defeat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  background-image: url("../../assets/championshipStage.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: white;
+  &__response {
+    width: 80%;
+    text-align: center;
+    margin-top: 4rem;
+    padding: 1rem;
+    background-color: rgb(#000000, 0.7);
+    border-radius: 12px;
+  }
+
+  &__loader {
+    text-align: center;
+    margin-top: 4rem;
+    padding: 1rem;
+    background-color: rgb(#000000, 0.7);
+    border-radius: 12px;
+    width: 500px;
+    height: 50px;
+    background: radial-gradient(circle closest-side, #ffffff 92%, #ffffff00)
+      calc(100% / 3) 0 / calc(100% / 4) 100%;
+    animation: l2 0.5s infinite linear;
+  }
+  @keyframes l2 {
+    100% {
+      background-position: 0 0;
+    }
+  }
+
+  &__img {
+    height: 30rem;
+    border-radius: 12px;
+    margin-top: 4rem;
+  }
+  &__message {
+    font-size: 1.875rem;
+    padding: 1rem;
+    background-color: rgb(#000000, 0.7);
+    border-radius: 12px;
+    margin: 1rem 0;
+  }
+  &__button {
+    padding: 1rem 3rem;
+    border-radius: 12px;
+    font-size: 2rem;
+    background-color: #329e1b;
+  }
+}
