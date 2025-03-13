@@ -15,7 +15,7 @@ https://rps-showdown.netlify.app/
 ## Technology Stack
 
 - **Front End:** React.js, Sass
-- **Back End:** Node.js
+- **Back End:** Node.js, Express.js
 - **AI:** Tensorflow, Gemini 1.5 flash
 
 ## Installation
